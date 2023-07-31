@@ -25,7 +25,7 @@ router.post('/profil', (req, res) => {
                 firstname: req.body.firstname,
                 image: req.body.image,
                 dateOfBirth: req.body.dateOfBirth,
-                myDescritpion: req.body.myDescription,
+                myDescription: req.body.myDescription,
                 teachSport: req.body.teachSport,
                 proCard : req.body.proCard,
                 siret : req.body.siret,
