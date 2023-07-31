@@ -3,10 +3,10 @@ var router = express.Router();
 
 require('../models/connection');
 const User = require('../models/users');
-const Student = require('../models/students');
+const Coach = require('../models/coachs');
 const { checkBody } = require('../modules/checkBody');
 
-// POST /profil => rajout données supplémentaires pour le student si pas déjà complété
+// POST /profil => rajout données supplémentaires pour le coach si pas déjà complété
 router.post('/profil', (req, res) => {
     // Vérification si un utilisateur n'a pas déjà été enregistré
     User.findOne({ token: req.body.token })
@@ -15,85 +15,93 @@ router.post('/profil', (req, res) => {
           return res.status(404).json({ error: 'User not found' });
         }
   
-        // Recherche du student existant par son ID user
-        Student.findOne({ Id_user: data._id })
-          .then(existingStudent => {
-            if (!existingStudent) {
-              // Aucun student trouvé avec cet ID user, on en crée un nouveau
-              const newStudent = new Student({
+        // Recherche du coach existant par son ID user
+        Coach.findOne({ Id_user: data._id })
+          .then(existingCoach => {
+            if (!existingCoach) {
+              // Aucun coach trouvé avec cet ID user, on en crée un nouveau
+              const newCoach = new Coach({
                 name: req.body.name,
                 firstname: req.body.firstname,
                 image: req.body.image,
                 dateOfBirth: req.body.dateOfBirth,
                 myDescritpion: req.body.myDescription,
-                favoriteSport: req.body.favoriteSport,
+                teachSport: req.body.teachSport,
+                proCard : req.body.proCard,
+                siret : req.body.siret,
+                iban : req.body.iban,
+                bic : req.body.bic,
+                price : req.body.price,
+                notes : req.body.notes,
+                agenda : req.body.teachSport,
                 Id_user: data._id,
+                Id_planning: data._id, // à modifier !!
               });
   
-              newStudent.save()
+              newCoach.save()
                 .then(newDoc => {
-                  res.json({ result: true, student: newDoc });
+                  res.json({ result: true, coach: newDoc });
                 })
                 .catch(error => {
-                  res.status(500).json({ error: 'Failed to save student data' });
+                  res.status(500).json({ error: 'Failed to save coach data' });
                 });
             } else {
-              // Un student existe déjà avec cet ID user, on met à jour ses données
-              existingStudent.name = req.body.name;
-              existingStudent.firstname = req.body.firstname;
-              existingStudent.image = req.body.image; 
-              existingStudent.dateOfBirth = req.body.dateOfBirth;
-              existingStudent.myDescritpion = req.body.myDescription;
-              existingStudent.favoriteSport = req.body.favoriteSport;
+              // Un coach existe déjà avec cet ID user, on met à jour ses données
+              existingCoach.name = req.body.name;
+              existingCoach.firstname = req.body.firstname;
+              existingCoach.image = req.body.image; 
+              existingCoach.dateOfBirth = req.body.dateOfBirth;
+              existingCoach.myDescritpion = req.body.myDescription;
+              existingCoach.favoriteSport = req.body.favoriteSport;
   
-              existingStudent.save()
+              existingCoach.save()
                 .then(updatedDoc => {
-                  res.json({ result: true, student: updatedDoc });
+                  res.json({ result: true, coach: updatedDoc });
                 })
                 .catch(error => {
-                  res.status(500).json({ error: 'Failed to update student data' });
+                  res.status(500).json({ error: 'Failed to update coach data' });
                 });
             }
           })
           .catch(error => {
-            res.status(500).json({ error: 'Failed to find student by user ID' });
+            res.status(500).json({ error: 'Failed to find coach by user ID' });
           });
       })
       .catch(error => {
-        res.status(500).json({ error: 'Failed to find user by token' });
+        res.status(500).json({ error: 'Failed to find coach by token' });
       });
   });
 
 
 
 
-/* GET students listing. */
+/* GET coach listing. */
 router.get('/', (req, res) => {
-  Student.find() 
+  Coach.find() 
     .populate('Id_user') // Utilisez le nom du champ pour faire apparaitre la clé étrangère
     .then(data => {
         res.json({ result: true, data });
       })
       .catch(error => {
-        res.status(500).json({ error: 'Failed to fetch students' });
+        res.status(500).json({ error: 'Failed to fetch coachs' });
       });
   });
 
 
-/* DELETE user et son student lié. Vérification avec présence du token */
+/* DELETE user et son coach lié. Vérification avec présence du token */
 router.delete('/:token', async (req, res) => {
     try {
-      // Recherche du student par son token
+      // d'abord recherche du coach par token
       const user = await User.findOne({ token: req.params.token });
       if (!user) {
-        return res.json({ result: false, error: 'User not found' });
+        return res.json({ result: false, error: 'Coach not found' });
       }
   
-      // étape 1 : Recherche du student lié à cet utilisateur
-      const student = await Student.findOne({ Id_user: user._id });
-      if (student) {
+      // étape 1 : Recherche du coach lié à cet utilisateur
+      const coach = await Coach.findOne({ Id_user: user._id });
+      if (coach) {
         // Suppression du student
-        await Student.deleteOne({ _id: student._id });
+        await Coach.deleteOne({ _id: coach._id });
       }
   
       // étape 2 : Suppression du user associé
@@ -101,7 +109,7 @@ router.delete('/:token', async (req, res) => {
       
       return res.json({ result: true });
     } catch (error) {
-      res.status(500).json({ result: false, error: 'Failed to delete user and associated student' });
+      res.status(500).json({ result: false, error: 'Failed to delete user and associated coach' });
     }
   });
 
