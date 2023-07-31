@@ -33,7 +33,7 @@ router.post('/profil', (req, res) => {
                 bic : req.body.bic,
                 price : req.body.price,
                 notes : req.body.notes,
-                agenda : req.body.teachSport,
+                agenda : req.body.agenda,
                 Id_user: data._id,
                 Id_planning: data._id, // à modifier !!
               });
@@ -47,12 +47,19 @@ router.post('/profil', (req, res) => {
                 });
             } else {
               // Un coach existe déjà avec cet ID user, on met à jour ses données
-              existingCoach.name = req.body.name;
-              existingCoach.firstname = req.body.firstname;
-              existingCoach.image = req.body.image; 
-              existingCoach.dateOfBirth = req.body.dateOfBirth;
-              existingCoach.myDescritpion = req.body.myDescription;
-              existingCoach.favoriteSport = req.body.favoriteSport;
+              existingCoach.name = req.body.name,
+              existingCoach.firstname = req.body.firstname,
+              existingCoach.image = req.body.image,
+              existingCoach.dateOfBirth = req.body.dateOfBirth,
+              existingCoach.myDescritpion = req.body.myDescription,
+              existingCoach.teachSport = req.body.teachSport,
+              existingCoach.proCard =  req.body.proCard,
+              existingCoach.siret = req.body.siret,
+              existingCoach.iban = req.body.iban,
+              existingCoach.bic = req.body.bic,
+              existingCoach.price = req.body.price,
+              existingCoach. notes = req.body.notes,
+              existingCoach.agenda = req.body.agenda,
   
               existingCoach.save()
                 .then(updatedDoc => {
