@@ -85,7 +85,8 @@ router.post('/profil', (req, res) => {
 /* GET coach listing. */
 router.get('/', (req, res) => {
   Coach.find() 
-    .populate('Id_user', 'Id_planning') // Utilisez le nom du champ pour faire apparaitre la clé étrangère
+    .populate('Id_user') // Utilisez le nom du champ pour faire apparaitre la clé étrangère
+    // .populate('Id_planning', null, {strict: false}) // ne fonctionne pas sans planning. cela indique à Mongoose de ne pas afficher l'erreur si planning n'existe pas encore.
     .then(data => {
         res.json({ result: true, data });
       })
