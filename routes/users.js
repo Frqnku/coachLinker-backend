@@ -71,16 +71,33 @@ router.get('/:token', (req, res) => {
   });
 });
 
+/* GET users listing. liste de tous les users */
+router.get('/', (req, res) => {
+  User.find().then(data => {
+          res.json({ result: true, data });
+  })
+});
+
 
 /* DELETE users. vérification avec présence du token */
 router.delete('/:token', (req, res) => {
   User.findOne({ token: req.params.token }).then(data => {
     if (data) {
-      res.json({ result: true, isValidate: data.isValidate });
-    } else {
-      res.json({ result: false, error: 'User not found' });
-    }
-  });
+      // L'utilisateur existe, nous allons le supprimer
+      User.deleteOne({ _id: data._id })
+      .then(() => {
+        res.json({ result: true });
+      })
+      .catch(error => {
+        res.status(500).json({ result: false, error: 'Failed to delete user' });
+      });
+  } else {
+    res.json({ result: false, error: 'User not found' });
+  }
+})
+.catch(error => {
+  res.status(500).json({ result: false, error: 'Failed to find user' });
+});
 });
 
 
