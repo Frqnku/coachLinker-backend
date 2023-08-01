@@ -14,6 +14,7 @@ const coachSchema = mongoose.Schema({
   price : Number,
   notes : Array,
   agenda : Array,
+  localisation : Array,
   Id_user: { type: mongoose.Schema.Types.ObjectId, ref: 'users' },
   Id_planning: { type: mongoose.Schema.Types.ObjectId, ref: 'plannings' },
 });
