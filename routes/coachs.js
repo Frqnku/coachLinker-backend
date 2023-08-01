@@ -34,6 +34,7 @@ router.post('/profil', (req, res) => {
                 price : req.body.price,
                 notes : req.body.notes,
                 agenda : req.body.agenda,
+                localisation : req.body.localisation,
                 Id_user: data._id,
                 Id_planning: data._id, // à modifier !!
               });

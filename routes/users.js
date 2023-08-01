@@ -6,6 +6,7 @@ const User = require('../models/users');
 const { checkBody } = require('../modules/checkBody');
 const uid2 = require('uid2');
 const bcrypt = require('bcrypt');
+const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 
 
@@ -18,7 +19,7 @@ router.post('/signup', (req, res) => {
 
 // vérification si un utilisateur n'a pas déjà été enregistré
   User.findOne({ email: req.body.email }).then(data => {
-    if (data === null) {
+    if (data === null && EMAIL_REGEX.test(req.body.email)) {
 
 //hachage du mot de passe
       const hash = bcrypt.hashSync(req.body.password, 10);
@@ -36,7 +37,7 @@ router.post('/signup', (req, res) => {
     } else {
 
 // User already exists in database
-      res.json({ result: false, error: 'User already exists' });
+      res.json({ result: false, error: 'User already exists or email is incorrect' });
     }
   });
 });
