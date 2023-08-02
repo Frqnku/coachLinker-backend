@@ -12,19 +12,6 @@ const bookingsSchema = mongoose.Schema({
 });
 
 
-// modif maud lundi soir : 
-
-// const bookingsSchema = mongoose.Schema({
-//     start: String,
-//     end: String,
-//     price: Number,
-//     duration : Number,
-//     status : String, enum :["pending", "confirmed","canceled"], default : "pending,"
-//     localisation: Array,
-//     Id_student: { type: mongoose.Schema.Types.ObjectId, ref: 'students'},
-//     Id_coach: { type: mongoose.Schema.Types.ObjectId, ref: 'coachs' }
-// });
-
 
 
 const Bookings = mongoose.model('bookings', bookingsSchema);
