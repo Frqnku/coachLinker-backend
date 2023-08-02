@@ -38,13 +38,13 @@ router.post('/profil', (req, res) => {
                   res.status(500).json({ error: 'Failed to save student data' });
                 });
             } else {
-              // Un student existe déjà avec cet ID user, on met à jour ses données
-              existingStudent.name = req.body.name;
-              existingStudent.firstname = req.body.firstname;
-              existingStudent.image = req.body.image; 
-              existingStudent.dateOfBirth = req.body.dateOfBirth;
-              existingStudent.myDescritpion = req.body.myDescription;
-              existingStudent.favoriteSport = req.body.favoriteSport;
+              
+              req.body.name && (existingStudent.name = req.body.name)
+              req.body.firstname && (existingStudent.firstname = req.body.firstname)
+              req.body.image && (existingStudent.image = req.body.image)
+              req.body.dateOfBirth && (existingStudent.dateOfBirth = req.body.dateOfBirth)
+              req.body.myDescription && (existingStudent.myDescription = req.body.myDescription)
+              req.body.favoriteSport && (existingStudent.favoriteSport = req.body.favoriteSport)
   
               existingStudent.save()
                 .then(updatedDoc => {
