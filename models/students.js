@@ -5,7 +5,7 @@ const studentSchema = mongoose.Schema({
   firstname: String,
   image: String,
   dateOfBirth : Date,
-  myDescritpion : String,
+  myDescription : String,
   favoriteSport : Array,  
   Id_user: { type: mongoose.Schema.Types.ObjectId, ref: 'users' },
 });
