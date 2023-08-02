@@ -18,6 +18,7 @@ router.post('/profil', (req, res) => {
         // Recherche du student existant par son ID user
         Student.findOne({ Id_user: data._id })
           .then(existingStudent => {
+            console.log(existingStudent)
             if (!existingStudent) {
               // Aucun student trouvé avec cet ID user, on en crée un nouveau
               const newStudent = new Student({
@@ -25,7 +26,7 @@ router.post('/profil', (req, res) => {
                 firstname: req.body.firstname,
                 image: req.body.image,
                 dateOfBirth: req.body.dateOfBirth,
-                myDescritpion: req.body.myDescription,
+                myDescritpion: req.body.myDescritpion,
                 favoriteSport: req.body.favoriteSport,
                 Id_user: data._id,
               });
@@ -38,12 +39,11 @@ router.post('/profil', (req, res) => {
                   res.status(500).json({ error: 'Failed to save student data' });
                 });
             } else {
-              
               req.body.name && (existingStudent.name = req.body.name)
               req.body.firstname && (existingStudent.firstname = req.body.firstname)
               req.body.image && (existingStudent.image = req.body.image)
               req.body.dateOfBirth && (existingStudent.dateOfBirth = req.body.dateOfBirth)
-              req.body.myDescription && (existingStudent.myDescription = req.body.myDescription)
+              req.body.myDescription && (existingStudent.myDescription = req.body.myDescritpion)
               req.body.favoriteSport && (existingStudent.favoriteSport = req.body.favoriteSport)
   
               existingStudent.save()
