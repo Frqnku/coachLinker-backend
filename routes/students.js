@@ -7,7 +7,8 @@ const Student = require('../models/students');
 const { checkBody } = require('../modules/checkBody');
 
 // POST /profil => rajout données supplémentaires pour le student si pas déjà complété
-router.post('/profil', (req, res) => {
+router.post('/profil', (req, res) => { 
+    console.log(req.body)
     // Vérification si un utilisateur n'a pas déjà été enregistré
     User.findOne({ token: req.body.token })
       .then(data => {
@@ -25,7 +26,7 @@ router.post('/profil', (req, res) => {
                 firstname: req.body.firstname,
                 image: req.body.image,
                 dateOfBirth: req.body.dateOfBirth,
-                myDescritpion: req.body.myDescription,
+                myDescription: req.body.myDescription,
                 favoriteSport: req.body.favoriteSport,
                 Id_user: data._id,
               });
