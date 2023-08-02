@@ -35,6 +35,7 @@ router.post('/profil', (req, res) => {
                 notes : req.body.notes,
                 agenda : req.body.agenda,
                 localisation : req.body.localisation,
+                isValidate : req.body.isValidate,
                 Id_user: data._id,
                 Id_planning: data._id, // à modifier !!
               });
@@ -61,6 +62,7 @@ router.post('/profil', (req, res) => {
               existingCoach.price = req.body.price,
               existingCoach. notes = req.body.notes,
               existingCoach.agenda = req.body.agenda,
+              existingCoach.isValidate = req.body.isValidate,
   
               existingCoach.save()
                 .then(updatedDoc => {
