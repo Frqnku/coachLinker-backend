@@ -4,15 +4,16 @@ const uniqid = require('uniqid');
 
 const cloudinary = require('cloudinary').v2;
 const fs = require('fs');
-const uniqId = uniqid();
+
 router.post('/upload', async (req, res) => {
-    
+    console.log('fetched')
+    const uniqId = uniqid();
     
     const photoPath = `./tmp/${uniqId}.jpg`;
     const resultMove = await req.files.photoFromFront.mv(photoPath);
-   const resultCloudinary = await cloudinary.uploader.upload(photoPath);
     
     if(!resultMove) {
+   const resultCloudinary = await cloudinary.uploader.upload(photoPath);
     fs.unlinkSync(photoPath);
         res.json({ result: true, url: resultCloudinary.secure_url });     
     } else {
