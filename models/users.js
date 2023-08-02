@@ -4,7 +4,7 @@ const userSchema = mongoose.Schema({
   email: String,
   password: String,
   token: String,
-  isValidate : Boolean,
+  isCoach : Boolean,
 });
 
 const User = mongoose.model('users', userSchema);
