@@ -28,11 +28,11 @@ router.post('/signup', (req, res) => {
         email: req.body.email,
         password: hash,
         token: uid2(32),
-        isValidate: false,
+        isCoach: false,
       });
 
       newUser.save().then(newDoc => {
-        res.json({ result: true, token: newDoc.token });
+        res.json({ result: true, token: newDoc.token, profile: newDoc.isCoach });
       });
     } else {
 
@@ -53,7 +53,7 @@ router.post('/signin', (req, res) => {
   User.findOne({ email: req.body.email }).then(data => {
     if (data && bcrypt.compareSync(req.body.password, data.password)) {
       console.log(data)
-      res.json({ result: true, token: data.token });
+      res.json({ result: true, token: data.token, profile : data.isCoach });
     } else {
       res.json({ result: false, error: 'User not found or wrong password' });
     }
