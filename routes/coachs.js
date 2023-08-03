@@ -1,133 +1,126 @@
 var express = require('express');
 var router = express.Router();
 
-require('../models/connection');
-const User = require('../models/users');
+const Student = require('../models/students');
 const Coach = require('../models/coachs');
 const { checkBody } = require('../modules/checkBody');
 
-// POST /profil => rajout données supplémentaires pour le coach si pas déjà complété
-router.post('/profil', (req, res) => {
-    // Vérification si un utilisateur n'a pas déjà été enregistré
-    User.findOne({ token: req.body.token })
-      .then(data => {
-        if (!data) {
-          return res.status(404).json({ error: 'User not found' });
-        }
-  
-        // Recherche du coach existant par son ID user
-        Coach.findOne({ Id_user: data._id })
-          .then(existingCoach => {
-            if (!existingCoach) {
-              // Aucun coach trouvé avec cet ID user, on en crée un nouveau
-              const newCoach = new Coach({
-                name: req.body.name,
-                firstname: req.body.firstname,
-                image: req.body.image,
-                dateOfBirth: req.body.dateOfBirth,
-                myDescription: req.body.myDescription,
-                teachSport: req.body.teachSport,
-                proCard : req.body.proCard,
-                siret : req.body.siret,
-                iban : req.body.iban,
-                bic : req.body.bic,
-                price : req.body.price,
-                notes : req.body.notes,
-                agenda : req.body.agenda,
-                localisation : req.body.localisation,
-                isValidate : req.body.isValidate,
-                Id_user: data._id,
-                Id_planning: data._id, // à modifier !!
-              });
-  
-              newCoach.save()
-                .then(newDoc => {
-                  res.json({ result: true, coach: newDoc });
-                })
-                .catch(error => {
-                  res.status(500).json({ error: 'Failed to save coach data' });
-                });
-            } else {
-              // Un coach existe déjà avec cet ID user, on met à jour ses données
-              existingCoach.name = req.body.name,
-              existingCoach.firstname = req.body.firstname,
-              existingCoach.image = req.body.image,
-              existingCoach.dateOfBirth = req.body.dateOfBirth,
-              existingCoach.myDescription = req.body.myDescription,
-              existingCoach.teachSport = req.body.teachSport,
-              existingCoach.proCard =  req.body.proCard,
-              existingCoach.siret = req.body.siret,
-              existingCoach.iban = req.body.iban,
-              existingCoach.bic = req.body.bic,
-              existingCoach.price = req.body.price,
-              existingCoach. notes = req.body.notes,
-              existingCoach.agenda = req.body.agenda,
-              existingCoach.isValidate = req.body.isValidate,
-  
-              existingCoach.save()
-                .then(updatedDoc => {
-                  res.json({ result: true, coach: updatedDoc });
-                })
-                .catch(error => {
-                  res.status(500).json({ error: 'Failed to update coach data' });
-                });
-            }
-          })
-          .catch(error => {
-            res.status(500).json({ error: 'Failed to find coach by user ID' });
-          });
-      })
-      .catch(error => {
-        res.status(500).json({ error: 'Failed to find coach by token' });
-      });
-  });
-
-
-
-
-/* GET coach listing. */
 router.get('/', (req, res) => {
-  Coach.find() 
-    .populate('Id_user') // Utilisez le nom du champ pour faire apparaitre la clé étrangère
-    // .populate('Id_planning', null, {strict: false}) // ne fonctionne pas sans planning. cela indique à Mongoose de ne pas afficher l'erreur si planning n'existe pas encore.
-    .then(data => {
-        res.json({ result: true, data });
-      })
-      .catch(error => {
-        res.status(500).json({ error: 'Failed to fetch coachs' });
-      });
-  });
+  Coach.find()
+  .then(data => {
+    return data ? res.json({ result: true, data }) : res.json({ result: false, error: 'Aucun coach trouvé' })
+  })
+})
 
+router.post('/new', (req, res) => {
+  if (!checkBody(req.body, ['email', 'password'])) {
+    return res.json({ result: false, error: 'Remplissez tous les champs de saisie' });
+  }
 
-/* DELETE user et son coach lié. Vérification avec présence du token */
-router.delete('/:token', async (req, res) => {
-    try {
-      // d'abord recherche du coach par token
-      const user = await User.findOne({ token: req.params.token });
-      if (!user) {
-        return res.json({ result: false, error: 'Coach not found' });
-      }
-  
-      // étape 1 : Recherche du coach lié à cet utilisateur
-      const coach = await Coach.findOne({ Id_user: user._id });
-      if (coach) {
-        // Suppression du student
-        await Coach.deleteOne({ _id: coach._id });
-      }
-  
-      // étape 2 : Suppression du user associé
-      await User.deleteOne({ _id: user._id });
-      
-      return res.json({ result: true });
-    } catch (error) {
-      res.status(500).json({ result: false, error: 'Failed to delete user and associated coach' });
+  Student.findOne({email: req.body.email})
+  .then(data => {
+    if(data) {
+      return res.json({result: false, error: 'Utilisateur déjà existant'})
     }
-  });
 
-  //Le mot-clé try est utilisé pour entourer le bloc de code où vous voulez essayer d'exécuter une ou plusieurs opérations potentiellement risquées (telles que l'accès à la base de données, la lecture de fichiers, etc.).
-//Si une exception (erreur) est levée dans le bloc try lors de l'exécution des opérations, le flux de contrôle est transféré au bloc catch, sautant ainsi les autres instructions dans le bloc try.
-//Le bloc catch est utilisé pour gérer l'exception et effectuer des actions de récupération appropriées. Il permet d'exécuter un autre bloc de code spécifique pour gérer l'erreur sans interrompre l'exécution du programme.
-//Vous pouvez accéder à l'erreur dans le bloc catch en utilisant un paramètre (souvent nommé error ou err), qui contiendra l'objet d'erreur avec des informations sur ce qui a mal tourné.
+    Coach.findOne({email: req.body.email})
+    .then(data => {
+      if(data) {
+        return res.json({result: false, error: 'Utilisateur déjà existant'})
+      }
+
+      const hash = bcrypt.hashSync(req.body.password, 10);
+
+      const newCoach = new Coach({
+        email: req.body.email,
+        password: hash,
+        token: uid2(32),
+        isCoach : false,
+        name: req.body.name,
+        firstname: req.body.firstname,
+        image: req.body.image,
+        dateOfBirth: req.body.dateOfBirth,
+        myDescription: req.body.myDescritpion,
+        teachedSport: [req.body.teachedSport],
+        proCard : req.body.proCard,
+        siret : req.body.siret,
+        iban : req.body.iban,
+        bic : req.body.bic,
+        price : req.body.price,
+        notes : [],
+        city: req.body.city,
+        coachingPlaces: [req.body.coachingPlaces],
+        isValidate: false,
+        bookings: [],
+        chatRooms: []
+      })
+    
+      newCoach.save()
+      .then(coach => {
+        return res.json({result: true, newCoach: coach})
+      })
+    })
+
+  })
+    
+})
+
+router.post('/update', (req, res) => {
+  Coach.findOne({token : req.body.token})
+  .then(data => {
+    if (!data) {
+      return res.json({ result: false, error: 'Utilisateur inexistant' });
+    }
+
+    req.body.image && (data.image = req.body.image)
+    req.body.myDescription && (data.myDescription = req.body.myDescription)
+    req.body.price && (data.price = req.body.price)
+    req.body.city && (data.city = req.body.city)
+    req.body.coachingPlaces && (data.coachingPlaces = [req.body.coachingPlaces])
+    req.body.teachedSport && (data.teachedSport = [req.body.teachedSport])
+    return res.json({ result: true, message: 'Informations mises à jour' });
+
+  })
+})
+
+router.post('/validate', (req, res) => {
+  Coach.findOne({token : req.body.token})
+  .then(data => {
+    if (!data) {
+      return res.json({ result: false, error: 'Utilisateur inexistant' });
+    }
+
+    isValidate = true
+    return res.json({ result: true, message: 'Profil coach validé' });
+
+  })
+})
+
+router.post('/newBooking', (req, res) => {
+  Coach.findOne({token : req.body.token})
+  .then(data => {
+    if (!data) {
+      return res.json({ result: false, error: 'Utilisateur inexistant' });
+    }
+
+    data.bookings.push(req.body.booking)
+    return res.json({ result: false, message: 'Nouvelle séance ajoutée' });
+    
+  })
+})
+
+router.post('/newChat', (req, res) => {
+  Coach.findOne({token : req.body.token})
+  .then(data => {
+    if (!data) {
+      return res.json({ result: false, error: 'Utilisateur inexistant' });
+    }
+
+    data.chatRooms.push(req.body.chatRoom)
+    return res.json({ result: false, message: 'Nouvelle chatRoom ajoutée' });
+    
+  })
+})
 
 module.exports = router;
 
