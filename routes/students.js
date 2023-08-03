@@ -16,7 +16,7 @@ router.get('/', (req, res) => {
 })
 
 router.post('/new', (req, res) => {
-  if (!checkBody(req.body, ['email', 'password', 'name', 'firstname', 'image', 'dateOfBirth', 'myDescription', 'favoriteSport'])) {
+  if (!checkBody(req.body, ['email', 'password', 'name','image','favoriteSport', 'firstname', 'dateOfBirth', 'myDescription'])) {
     return res.json({ result: false, error: 'Remplissez tous les champs de saisie' });
   }
 
