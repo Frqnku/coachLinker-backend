@@ -8,9 +8,9 @@ const studentSchema = mongoose.Schema({
   name: String,
   firstname: String,
   image: String,
-  dateOfBirth : Date,
+  dateOfBirth : String,
   myDescription : String,
-  favoriteSport : [String],
+  favoriteSport : Array,
 });
 
 const Student = mongoose.model('students', studentSchema);

@@ -16,7 +16,8 @@ router.get('/', (req, res) => {
 })
 
 router.post('/new', (req, res) => {
-  if (!checkBody(req.body, ['email', 'password', 'name','image','favoriteSport', 'firstname', 'dateOfBirth', 'myDescription'])) {
+  console.log(req.body)
+  if (!checkBody(req.body, ['email', 'password', 'name', 'firstname', 'image', 'dateOfBirth', 'myDescription', 'favoriteSport'])) {
     return res.json({ result: false, error: 'Remplissez tous les champs de saisie' });
   }
 
@@ -43,8 +44,8 @@ router.post('/new', (req, res) => {
         firstname: req.body.firstname,
         image: req.body.image,
         dateOfBirth: req.body.dateOfBirth,
-        myDescription: req.body.myDescritpion,
-        favoriteSport: [req.body.favoriteSport],
+        myDescription: req.body.myDescription,
+        favoriteSport: req.body.favoriteSport,
       })
     
       newStudent.save()
