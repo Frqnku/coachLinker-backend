@@ -4,6 +4,8 @@ var router = express.Router();
 const Student = require('../models/students');
 const Coach = require('../models/coachs');
 const { checkBody } = require('../modules/checkBody');
+const uid2 = require('uid2');
+const bcrypt = require('bcrypt')
 
 router.get('/', (req, res) => {
   Coach.find()
@@ -19,13 +21,13 @@ router.post('/new', (req, res) => {
 
   Student.findOne({email: req.body.email})
   .then(data => {
-    if(data) {
+    if(!data) {
       return res.json({result: false, error: 'Utilisateur déjà existant'})
     }
 
     Coach.findOne({email: req.body.email})
     .then(data => {
-      if(data) {
+      if(!data) {
         return res.json({result: false, error: 'Utilisateur déjà existant'})
       }
 
