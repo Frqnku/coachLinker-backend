@@ -11,12 +11,12 @@ const bcrypt = require('bcrypt');
 router.get('/', (req, res) => {
   Student.find()
   .then(data => {
-    return data ? res.json({ result: true, data }) : res.json({ result: false, error: 'Aucun coach trouvé' })
+    return data ? res.json({ result: true, data }) : res.json({ result: false, error: 'Aucun student trouvé' })
   })
 })
 
 router.post('/new', (req, res) => {
-  if (!checkBody(req.body, ['email', 'password'])) {
+  if (!checkBody(req.body, ['email', 'password', 'name', 'firstname', 'image', 'dateOfBirth', 'myDescription', 'favoriteSport'])) {
     return res.json({ result: false, error: 'Remplissez tous les champs de saisie' });
   }
 
@@ -45,8 +45,6 @@ router.post('/new', (req, res) => {
         dateOfBirth: req.body.dateOfBirth,
         myDescription: req.body.myDescritpion,
         favoriteSport: [req.body.favoriteSport],
-        bookings: [],
-        chatRooms: []
       })
     
       newStudent.save()

@@ -13,7 +13,7 @@ router.get('/', (req, res) => {
 })
 
 router.post('/new', (req, res) => {
-  if (!checkBody(req.body, ['email', 'password'])) {
+  if (!checkBody(req.body, ['email', 'password', 'name', 'firstname', 'image', 'myDescription', 'teachedSport', 'proCard', 'siret', 'iban', 'bic', 'price', 'notes', 'city', 'coachingPlaces'])) {
     return res.json({ result: false, error: 'Remplissez tous les champs de saisie' });
   }
 
@@ -35,7 +35,7 @@ router.post('/new', (req, res) => {
         email: req.body.email,
         password: hash,
         token: uid2(32),
-        isCoach : false,
+        isCoach : true,
         name: req.body.name,
         firstname: req.body.firstname,
         image: req.body.image,
@@ -51,8 +51,6 @@ router.post('/new', (req, res) => {
         city: req.body.city,
         coachingPlaces: [req.body.coachingPlaces],
         isValidate: false,
-        bookings: [],
-        chatRooms: []
       })
     
       newCoach.save()
@@ -93,32 +91,6 @@ router.post('/validate', (req, res) => {
     isValidate = true
     return res.json({ result: true, message: 'Profil coach validé' });
 
-  })
-})
-
-router.post('/newBooking', (req, res) => {
-  Coach.findOne({token : req.body.token})
-  .then(data => {
-    if (!data) {
-      return res.json({ result: false, error: 'Utilisateur inexistant' });
-    }
-
-    data.bookings.push(req.body.booking)
-    return res.json({ result: false, message: 'Nouvelle séance ajoutée' });
-    
-  })
-})
-
-router.post('/newChat', (req, res) => {
-  Coach.findOne({token : req.body.token})
-  .then(data => {
-    if (!data) {
-      return res.json({ result: false, error: 'Utilisateur inexistant' });
-    }
-
-    data.chatRooms.push(req.body.chatRoom)
-    return res.json({ result: false, message: 'Nouvelle chatRoom ajoutée' });
-    
   })
 })
 

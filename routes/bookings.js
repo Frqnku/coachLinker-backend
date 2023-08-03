@@ -16,6 +16,9 @@ router.get('/student', (req, res) => {
         Booking.find({studentID: data._id})
         .populate('coachID', 'firstname image price')
         .then(bookings => {
+            if(!bookings) {
+                return res.json({result: false, error: 'Aucune réservation'})
+            }
             return res.json({result: true, bookings})
         })
     })
