@@ -5,6 +5,32 @@ const uniqid = require('uniqid');
 const cloudinary = require('cloudinary').v2;
 const fs = require('fs');
 
+const Student = require('../models/students');
+const Coach = require('../models/coachs');
+const { checkBody } = require('../modules/checkBody');
+const bcrypt = require('bcrypt')
+
+router.post('/connect', (req, res) => {
+  if (!checkBody(req.body, ['email', 'password'])) {
+    return res.json({ result: false, error: 'Remplissez tous les champs de saisie' });
+  }
+
+  Coach.findOne({email: req.body.email})
+  .then(data => {
+    if(data && bcrypt.compareSync(req.body.password, data.password)) {
+      return res.json({result: true, message: 'Connecté avec succès'})
+    }
+
+    Student.findOne({email: req.body.email})
+    .then(data => {
+      if(data && bcrypt.compareSync(req.body.password, data.password)) {
+        return res.json({result: true, message: 'Connecté avec succès'})
+      }
+
+      return res.json({result: false, message: 'Aucun utilisateur trouvé'})
+    })
+  })
+})
 
 router.post('/upload', async (req, res) => {
   try {
