@@ -72,31 +72,5 @@ router.post('/update', (req, res) => {
   })
 })
 
-router.post('/newBooking', (req, res) => {
-  Student.findOne({token : req.body.token})
-  .then(data => {
-    if (!data) {
-      return res.json({ result: false, error: 'Utilisateur inexistant' });
-    }
-
-    data.bookings.push(req.body.booking)
-    return res.json({ result: true, message: 'Nouvelle séance ajoutée' });
-    
-  })
-})
-
-router.post('/newChat', (req, res) => {
-  Student.findOne({token : req.body.token})
-  .then(data => {
-    if (!data) {
-      return res.json({ result: false, error: 'Utilisateur inexistant' });
-    }
-
-    data.chatRooms.push(req.body.chatRoom)
-    return res.json({ result: true, message: 'Nouvelle chatRoom ajoutée' });
-
-  })
-})
-
 module.exports = router;
 
