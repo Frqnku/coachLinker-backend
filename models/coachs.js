@@ -1,23 +1,25 @@
 const mongoose = require('mongoose');
 
 const coachSchema = mongoose.Schema({
+  email: String,
+  password: String,
+  token: String,
+  isCoach : Boolean,
   name: String,
   firstname: String,
   image: String,
   dateOfBirth : Date,
   myDescription : String,
-  teachSport : Array,  
+  teachedSport : [String],
   proCard : String,
-  siret : Number, 
+  siret : String, 
   iban : String,
   bic : String, 
   price : Number,
-  notes : Array,
-  agenda : Array,
-  localisation : Array,
+  notes : [Number],
+  city : String,
+  coachingPlaces : [String],
   isValidate : Boolean,
-  Id_user: { type: mongoose.Schema.Types.ObjectId, ref: 'users' },
-  Id_planning: { type: mongoose.Schema.Types.ObjectId, ref: 'plannings' },
 });
 
 const Coach = mongoose.model('coachs', coachSchema);
