@@ -1,23 +1,19 @@
 const mongoose = require('mongoose');
 
-// modèle sous document pour planning
-
-const daysSchema = mongoose.Schema({
-    startDay: String,
-    endDay: String
+const DaySchema = mongoose.Schema({
+  dayOfWeek: String,
+  startDay: String,
+  endDay: String
 })
 
-const planningsSchema = mongoose.Schema({
-  monday: daysSchema,
-  tuesday: daysSchema,
-  wednesday: daysSchema,
-  thursday: daysSchema,
-  friday: daysSchema,
-  saturday: daysSchema,
-  sunday: daysSchema,
-  exceptions: daysSchema,
+const PlanningSchema = mongoose.Schema({
+  coachID: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "coachs"
+  },
+  days: [DaySchema]
 });
 
-const Plannings = mongoose.model('plannings', planningsSchema);
+const Planning = mongoose.model('plannings', PlanningSchema);
 
-module.exports = Plannings;
+module.exports = Planning;
