@@ -33,9 +33,10 @@ router.post('/connect', (req, res) => {
 })
 
 router.post('/upload', async (req, res) => {
+  console.log('files', req.files)
   try {
     const photoStream = req.files.photoFromFront.data;
-
+    console.log('photostream' , photoStream)
     cloudinary.uploader.upload_stream(
       { resource_type: 'image' },
       (error, result) => {
