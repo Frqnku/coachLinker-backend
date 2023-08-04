@@ -40,6 +40,28 @@ function sendConfirmationEmail(coachEmail, bookingDetails) {
         }
     })
 }
+// middleware pour envoyer l'email de confirmation au student
+function sendConfirmationStudentEmail(studentEmail, bookingConfirm) {
+    const templateHtml = fs.readFileSync("./models/templateStudent.html", "utf-8")
+    const compiledTemplate = handlebars.compile(templateHtml)
+    const html = compiledTemplate(bookingConfirm)
+
+    const mailOptions = {
+        from: "coachlinker@gmail.com",
+        to: studentEmail,
+        subject: "Votre réservation",
+        html: html,
+    }
+
+    // envoyer email student
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            console.log("Erreur lors de l'envoi de l'email :", error)
+        } else {
+            console.log('Email envoyé:', info.response)
+        }
+    })
+}
 
 router.get('/student', (req, res) => {
     Student.findOne({token: req.body.token})
@@ -66,7 +88,7 @@ router.get('/coach', (req, res) => {
             return res.json({result: false, error: 'Aucun utilisateur trouvé'})
         }
 
-        Booking.find({studentID: data._id})
+        Booking.find({coachID: data._id})
         .populate('studentID', 'firstname image dateOfBirth')
         .then(bookings => {
             return res.json({result: true, bookings})
@@ -104,18 +126,33 @@ router.post('/new', (req, res) => {
                     .then(coach => {
                         if (coach) {
                         const bookingDetails = {
+                            coachName: coach.firstname,
                             date : req.body.date, /* a voir avec le groupe */
                             startTime: req.body.startTime,
                             endTime: req.body.endTime,
-                            studentName: req.body.studentName,
                             coachingPlace: req.body.coachingPlace,
                             selectedSport: req.body.selectedSport
                         }
                         sendConfirmationEmail(coach.email, bookingDetails)
-                        return res.json({result: true, data})
                    
                     }
                     }) 
+
+                    Student.findOne({token: req.body.token})
+                    .then(student => {
+                        if (student) {
+                            const bookingConfirm = {
+                                studentName: student.firstname,
+                                date : req.body.date, /* a voir avec le groupe */
+                                startTime: req.body.startTime,
+                                endTime: req.body.endTime,
+                                coachingPlace: req.body.coachingPlace,
+                                selectedSport: req.body.selectedSport
+                            }
+                            sendConfirmationStudentEmail(student.email, bookingConfirm)
+                            return res.json({result: true, data})
+                        }
+                    })
                 }
                 })
             })    
