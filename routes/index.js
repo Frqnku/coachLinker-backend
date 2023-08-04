@@ -18,18 +18,41 @@ router.post('/connect', (req, res) => {
   Coach.findOne({email: req.body.email})
   .then(data => {
     if(data && bcrypt.compareSync(req.body.password, data.password)) {
-      return res.json({result: true, message: 'Connecté avec succès'})
+      return res.json({result: true, message: 'Connecté avec succès', token: data.token})
     }
 
     Student.findOne({email: req.body.email})
     .then(data => {
       if(data && bcrypt.compareSync(req.body.password, data.password)) {
-        return res.json({result: true, message: 'Connecté avec succès'})
+        return res.json({result: true, message: 'Connecté avec succès', token: data.token})
       }
 
       return res.json({result: false, message: 'Aucun utilisateur trouvé'})
     })
   })
+})
+
+router.post('/isExisting', (req, res) => {
+  if (!checkBody(req.body, ['email', 'password'])) {
+    return res.json({ result: false, error: 'Remplissez tous les champs de saisie' });
+  }
+
+  Coach.findOne({email: req.body.email})
+  .then(data => {
+    if(data) {
+      return res.json({result: false, error: 'Email déjà utilisé'})
+    }
+
+    Student.findOne({email: req.body.email})
+    .then(data => {
+      if(data) {
+        return res.json({result: false, error: 'Email déjà utilisé'})
+      }
+
+      return res.json({result: true, message: 'Aucun utilisateur trouvé'})
+    })
+  })
+
 })
 
 router.post('/upload', async (req, res) => {
