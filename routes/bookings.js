@@ -5,6 +5,41 @@ const Booking = require('../models/bookings')
 const Student = require('../models/students')
 const Coach = require('../models/coachs')
 const { checkBody } = require("../modules/checkBody");
+const nodemailer = require('nodemailer')
+const handlebars = require('handlebars')
+const fs = require('fs')
+
+// transporteur pour envoi d'email
+const transporter = nodemailer.createTransport({
+    service: 'Gmail',
+    auth: {
+        user:'coachlinker@gmail.com',
+        pass: process.env.PWD_GMAIL
+    }
+})
+
+// middleware pour envoyer l'email de confirmation
+function sendConfirmationEmail(coachEmail, bookingDetails) {
+    const templateHtml = fs.readFileSync("./models/template.html", "utf-8")
+    const compiledTemplate = handlebars.compile(templateHtml)
+    const html = compiledTemplate(bookingDetails)
+
+    const mailOptions = {
+        from: "coachlinker@gmail.com",
+        to: coachEmail,
+        subject: "Nouvelle réservation pour coaching",
+        html: html,
+    }
+
+    // envoyer email
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            console.log("Erreur lors de l'envoi de l'email :", error)
+        } else {
+            console.log('Email envoyé:', info.response)
+        }
+    })
+}
 
 router.get('/student', (req, res) => {
     Student.findOne({token: req.body.token})
@@ -63,11 +98,30 @@ router.post('/new', (req, res) => {
     
                 newBooking.save()
                 .then(data => {
-                    return res.json({result: true, data})
-                })    
+                    if (data) {
+                    // envoi de l'email de confirmation au coach
+                    Coach.findById(req.body.coachID)
+                    .then(coach => {
+                        if (coach) {
+                        const bookingDetails = {
+                            date : req.body.date, /* a voir avec le groupe */
+                            startTime: req.body.startTime,
+                            endTime: req.body.endTime,
+                            studentName: req.body.studentName,
+                            coachingPlace: req.body.coachingPlace,
+                            selectedSport: req.body.selectedSport
+                        }
+                        sendConfirmationEmail(coach.email, bookingDetails)
+                        return res.json({result: true, data})
+                   
+                    }
+                    }) 
+                }
+                })
             })    
         }    
     })    
 })    
 
+    
 module.exports = router;
