@@ -33,7 +33,7 @@ router.post('/connect', (req, res) => {
 })
 
 router.post('/isExisting', (req, res) => {
-  if (!checkBody(req.body, ['email'])) {
+  if (!checkBody(req.body, ['email', 'password'])) {
     return res.json({ result: false, error: 'Remplissez tous les champs de saisie' });
   }
 
