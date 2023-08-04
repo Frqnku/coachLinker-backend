@@ -63,17 +63,16 @@ function sendConfirmationStudentEmail(studentEmail, bookingConfirm) {
     })
 }
 
-router.post('/student', (req, res) => {
+router.get('/student', (req, res) => {
     Student.findOne({token: req.body.token})
     .then(data => {
         if(!data) {
             return res.json({result: false, error: 'Aucun utilisateur trouvé'})
         }
-        
+
         Booking.find({studentID: data._id})
         .populate('coachID', 'firstname image price')
         .then(bookings => {
-            
             if(!bookings) {
                 return res.json({result: false, error: 'Aucune réservation'})
             }
@@ -82,14 +81,14 @@ router.post('/student', (req, res) => {
     })
 })
 
-router.post('/coach', (req, res) => {
+router.get('/coach', (req, res) => {
     Coach.findOne({token: req.body.token})
     .then(data => {
         if(!data) {
             return res.json({result: false, error: 'Aucun utilisateur trouvé'})
         }
 
-        Booking.find({coachID: data._id})
+        Booking.find({studentID: data._id})
         .populate('studentID', 'firstname image dateOfBirth')
         .then(bookings => {
             return res.json({result: true, bookings})
@@ -147,6 +146,7 @@ router.post('/new', (req, res) => {
                                 date : req.body.date, /* a voir avec le groupe */
                                 startTime: req.body.startTime,
                                 endTime: req.body.endTime,
+                                coachName: req.body.coachName,
                                 coachingPlace: req.body.coachingPlace,
                                 selectedSport: req.body.selectedSport
                             }
