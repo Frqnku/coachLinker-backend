@@ -10,7 +10,7 @@ const studentSchema = mongoose.Schema({
   image: String,
   dateOfBirth : String,
   myDescription : String,
-  favoriteSport : [String],
+  favoriteSport :Array,
 });
 
 const Student = mongoose.model('students', studentSchema);
