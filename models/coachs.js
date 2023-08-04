@@ -16,9 +16,9 @@ const coachSchema = mongoose.Schema({
   iban : String,
   bic : String, 
   price : Number,
-  notes : [Number],
+  notes : Array,
   city : String,
-  coachingPlaces : [String],
+  coachingPlaces : Array,
   isValidate : Boolean,
 });
 
