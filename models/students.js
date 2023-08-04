@@ -13,6 +13,7 @@ const studentSchema = mongoose.Schema({
   favoriteSport : Array,
 });
 
+
 const Student = mongoose.model('students', studentSchema);
 
 module.exports = Student;

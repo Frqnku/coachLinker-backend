@@ -63,16 +63,17 @@ function sendConfirmationStudentEmail(studentEmail, bookingConfirm) {
     })
 }
 
-router.get('/student', (req, res) => {
+router.post('/student', (req, res) => {
     Student.findOne({token: req.body.token})
     .then(data => {
         if(!data) {
             return res.json({result: false, error: 'Aucun utilisateur trouvé'})
         }
-
+        
         Booking.find({studentID: data._id})
         .populate('coachID', 'firstname image price')
         .then(bookings => {
+            
             if(!bookings) {
                 return res.json({result: false, error: 'Aucune réservation'})
             }
@@ -81,7 +82,7 @@ router.get('/student', (req, res) => {
     })
 })
 
-router.get('/coach', (req, res) => {
+router.post('/coach', (req, res) => {
     Coach.findOne({token: req.body.token})
     .then(data => {
         if(!data) {

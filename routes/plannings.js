@@ -25,44 +25,47 @@ router.post('/new', (req, res) => {
         if(!data) {
             return res.json({result: false, error: 'Aucun coach trouvé'})
         }
+
+        const { lundi, mardi, mercredi, jeudi, vendredi, samedi, dimanche} = req.body.week
+
         const newPlanning = new Planning({
             coachID: data._id,
             days: [
                 {
-                    dayOfWeek: 'Lundi',
-                    startDay: '09:00',
-                    endDay: '19:00'
+                    dayOfWeek: lundi.day,
+                    startDay: lundi.day,
+                    endDay: lundi.day
                 },
                 {
-                    dayOfWeek: 'Mardi',
-                    startDay: '09:00',
-                    endDay: '19:00'
+                    dayOfWeek: mardi.day,
+                    startDay: mardi.day,
+                    endDay: mardi.day
                 },
                 {
-                    dayOfWeek: 'Mercredi',
-                    startDay: '09:00',
-                    endDay: '19:00'
+                    dayOfWeek: mercredi.day,
+                    startDay: mercredi.day,
+                    endDay: mercredi.day
                 },
                 {
-                    dayOfWeek: 'Jeudi',
-                    startDay: '09:00',
-                    endDay: '19:00'
+                    dayOfWeek: jeudi.day,
+                    startDay: jeudi.day,
+                    endDay: jeudi.day
                 },
                 {
-                    dayOfWeek: 'Vendredi',
-                    startDay: '09:00',
-                    endDay: '19:00'
+                    dayOfWeek: vendredi.day,
+                    startDay: vendredi.day,
+                    endDay: vendredi.day
                 },
                 {
-                    dayOfWeek: 'Samedi',
-                    startDay: '09:00',
-                    endDay: '19:00'
+                    dayOfWeek: samedi.day,
+                    startDay: samedi.day,
+                    endDay: samedi.day
                 },
                 {
-                    dayOfWeek: 'Dimanche',
-                    startDay: '09:00',
-                    endDay: '19:00'
-                }
+                    dayOfWeek: dimanche.day,
+                    startDay: dimanche.day,
+                    endDay: dimanche.day
+                },
             ]
         })    
 

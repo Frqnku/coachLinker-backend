@@ -15,19 +15,19 @@ router.get('/', (req, res) => {
 })
 
 router.post('/new', (req, res) => {
-  if (!checkBody(req.body, ['email', 'password', 'name', 'firstname', 'image', 'myDescription', 'teachedSport', 'proCard', 'siret', 'iban', 'bic', 'price', 'notes', 'city', 'coachingPlaces'])) {
+  if (!checkBody(req.body, ['email', 'password', 'name', 'firstname', 'image', 'myDescription', 'teachedSport', 'proCard', 'siret', 'iban', 'bic', 'price', 'city'])) {
     return res.json({ result: false, error: 'Remplissez tous les champs de saisie' });
   }
 
   Student.findOne({email: req.body.email})
   .then(data => {
-    if(!data) {
+    if(data) {
       return res.json({result: false, error: 'Utilisateur déjà existant'})
     }
 
     Coach.findOne({email: req.body.email})
     .then(data => {
-      if(!data) {
+      if(data) {
         return res.json({result: false, error: 'Utilisateur déjà existant'})
       }
 
