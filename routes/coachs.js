@@ -42,7 +42,7 @@ router.post('/new', (req, res) => {
         firstname: req.body.firstname,
         image: req.body.image,
         dateOfBirth: req.body.dateOfBirth,
-        myDescription: req.body.myDescritpion,
+        myDescription: req.body.myDescription,
         teachedSport: [req.body.teachedSport],
         proCard : req.body.proCard,
         siret : req.body.siret,
@@ -73,7 +73,7 @@ router.post('/update', (req, res) => {
     }
 
     req.body.image && (data.image = req.body.image)
-    req.body.myDescription && (data.myDescription = req.body.myDescription)
+    req.body.myDescription && (data.myDescription = req.body.myDescritpion)
     req.body.price && (data.price = req.body.price)
     req.body.city && (data.city = req.body.city)
     req.body.coachingPlaces && (data.coachingPlaces = [req.body.coachingPlaces])
