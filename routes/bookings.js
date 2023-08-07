@@ -63,7 +63,7 @@ function sendConfirmationStudentEmail(studentEmail, bookingConfirm) {
     })
 }
 
-router.get('/student', (req, res) => {
+router.post('/student', (req, res) => {
     Student.findOne({token: req.body.token})
     .then(data => {
         if(!data) {
@@ -81,7 +81,7 @@ router.get('/student', (req, res) => {
     })
 })
 
-router.get('/coach', (req, res) => {
+router.post('/coach', (req, res) => {
     Coach.findOne({token: req.body.token})
     .then(data => {
         if(!data) {
