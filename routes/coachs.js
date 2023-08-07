@@ -22,12 +22,6 @@ router.post('/profil', (req, res) => {
   })
 })
 
-// router.post('/', (req, res) => {
-//   Coach.findOne({token: req.body.token})
-//   .then(data => {
-//     if(!data) {
-//       return res.json({result: false, error: 'Aucun utilisateur trouvé'})
-// } })})
 
 
 router.post('/new', (req, res) => {
