@@ -10,15 +10,15 @@ const coachSchema = mongoose.Schema({
   image: String,
   dateOfBirth : Date,
   myDescription : String,
-  teachedSport : [String],
+  teachedSport : Array,
   proCard : String,
   siret : String, 
   iban : String,
   bic : String, 
   price : Number,
-  notes : [Number],
+  notes : Array,
   city : String,
-  coachingPlaces : [String],
+  coachingPlaces : Array,
   isValidate : Boolean,
 });
 

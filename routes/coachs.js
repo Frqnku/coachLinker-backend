@@ -15,19 +15,19 @@ router.get('/', (req, res) => {
 })
 
 router.post('/new', (req, res) => {
-  if (!checkBody(req.body, ['email', 'password', 'name', 'firstname', 'image', 'myDescription', 'teachedSport', 'proCard', 'siret', 'iban', 'bic', 'price', 'notes', 'city', 'coachingPlaces'])) {
+  if (!checkBody(req.body, ['email', 'password', 'name', 'firstname', 'image', 'myDescription', 'teachedSport', 'proCard', 'siret', 'iban', 'bic', 'price', 'city'])) {
     return res.json({ result: false, error: 'Remplissez tous les champs de saisie' });
   }
 
   Student.findOne({email: req.body.email})
   .then(data => {
-    if(!data) {
+    if(data) {
       return res.json({result: false, error: 'Utilisateur déjà existant'})
     }
 
     Coach.findOne({email: req.body.email})
     .then(data => {
-      if(!data) {
+      if(data) {
         return res.json({result: false, error: 'Utilisateur déjà existant'})
       }
 
@@ -42,7 +42,7 @@ router.post('/new', (req, res) => {
         firstname: req.body.firstname,
         image: req.body.image,
         dateOfBirth: req.body.dateOfBirth,
-        myDescription: req.body.myDescritpion,
+        myDescription: req.body.myDescription,
         teachedSport: [req.body.teachedSport],
         proCard : req.body.proCard,
         siret : req.body.siret,
@@ -73,7 +73,7 @@ router.post('/update', (req, res) => {
     }
 
     req.body.image && (data.image = req.body.image)
-    req.body.myDescription && (data.myDescription = req.body.myDescription)
+    req.body.myDescription && (data.myDescription = req.body.myDescritpion)
     req.body.price && (data.price = req.body.price)
     req.body.city && (data.city = req.body.city)
     req.body.coachingPlaces && (data.coachingPlaces = [req.body.coachingPlaces])

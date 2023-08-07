@@ -24,13 +24,13 @@ router.post('/new', (req, res) => {
   Student.findOne({email: req.body.email})
   .then(data => {
     if(data) {
-      return res.json({result: false, error: 'Utilisateur déjà existant'})
+      return res.json({result: false, error: 'Student déjà existant'})
     }
 
     Coach.findOne({email: req.body.email})
     .then(data => {
       if(data) {
-        return res.json({result: false, error: 'Utilisateur déjà existant'})
+        return res.json({result: false, error: 'Coach déjà existant'})
       }
 
       const hash = bcrypt.hashSync(req.body.password, 10);
