@@ -7,8 +7,8 @@ const { checkBody } = require('../modules/checkBody');
 const uid2 = require('uid2');
 const bcrypt = require('bcrypt')
 
-router.get('/', (req, res) => {
-  Coach.find()
+router.post('/', (req, res) => {
+  Coach.findOne({token: req.body.token})
   .then(data => {
     return data ? res.json({ result: true, data }) : res.json({ result: false, error: 'Aucun coach trouvé' })
   })
