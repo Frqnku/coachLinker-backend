@@ -16,7 +16,6 @@ router.post('/', (req, res) => {
 })
 
 router.post('/new', (req, res) => {
-    console.log(req.body)
     if (!checkBody(req.body, ['token', 'planning'])) {
         return res.json({ result: false, error: 'Remplissez tous les champs de saisie' });
     }
@@ -29,17 +28,19 @@ router.post('/new', (req, res) => {
         }
 
         const planning = req.body.planning;
-
+        const daysOfWeek = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
+        
         // check si coach a déjà un planning
         Planning.findOne({ coachID: data._id})
         .then(existingPlanning => {
             if (existingPlanning) {
-                console.log('Planning existant')
+                console.log('exist', existingPlanning, 'exist')
                 // si le planning existe déjà, met à jour le planning existant
                 existingPlanning.days.forEach((day, i) => {
-                    if (planning[day.dayOfWeek]) {
-                        existingPlanning.days[i].startDay = planning[day.dayOfWeek].start || "9:00"
-                        existingPlanning.days[i].endDay = planning[day.dayOfWeek].end || "12:00"
+                    console.log(planning[i])
+                    if (planning[i]) {
+                        existingPlanning.days[i].startDay = planning[i].start || ""
+                        existingPlanning.days[i].endDay = planning[i].end || ""
                     }
                     
                 });
@@ -54,14 +55,14 @@ router.post('/new', (req, res) => {
                 })
                 } else {
                     // s'il n'y a pas de planning existant, crée un nouveau planning
-                    const daysOfWeek = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
+                    
 
                     const newPlanning = new Planning({
                     coachID: data._id,
-                    days: daysOfWeek.map(day => ({
+                    days: daysOfWeek.map((day, i) => ({
                         dayOfWeek: day,
-                        startDay: planning.day ? planning.day.start : '9:00',
-                        endDay: planning[day] ? planning[day].end : '12:00'
+                        startDay: planning[i].start ? planning[i].start : '',
+                        endDay: planning[i].end ? planning[i].end : ''
                     }))
                 });
 
