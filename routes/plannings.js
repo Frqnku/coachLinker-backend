@@ -16,7 +16,7 @@ router.post('/', (req, res) => {
 })
 
 router.post('/new', (req, res) => {
-    console.log('hey')
+    console.log(req.body)
     if (!checkBody(req.body, ['token', 'planning'])) {
         return res.json({ result: false, error: 'Remplissez tous les champs de saisie' });
     }

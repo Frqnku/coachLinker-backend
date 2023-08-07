@@ -1,39 +1,34 @@
 const express = require("express");
-var router = express.Router();
 const app = express();
-const PORT = 4000;
+const router = express.Router();
+const ChatObject = require("../models/chatSchema");
+const SERVER_ERROR = "SERVER_ERROR";
 
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-
-
-const http = require("http").Server(app);
-const cors = require("cors");
-
-app.use(cors());
-const socketIO = require('socket.io')(http, {
-    cors: {
-        origin: "<http://localhost:3000>"
-    }
+// route for get all chat
+router.get("/all", async (req, res) => {
+  try {
+    const data = await ChatObject.find({ organisation: req.body.organisation });
+    return res.status(200).send({ ok: true, data });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ ok: false, code: SERVER_ERROR, error });
+  }
 });
 
-//👇🏻 Add this before the app.get() block
-socketIO.on('connection', (socket) => {
-    console.log(`⚡: ${socket.id} user just connected!`);
-
-    socket.on('disconnect', () => {
-      socket.disconnect()
-      console.log('🔥: A user disconnected');
+// route for create new message in chat collection
+router.post("/new", async (req, res) => {
+  try {
+    const data = await ChatObject.create({
+      content: req.body.content,
+      organisation: req.body.organisation,
+      name: req.body.name,
+      
     });
+    return res.status(200).send({ data, ok: true });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({ ok: false, code: SERVER_ERROR });
+  }
 });
 
-app.get("/api", (req, res) => {
-    res.json({
-        message: "Hello world",
-    });
-});
-
-http.listen(PORT, () => {
-    console.log(`Server listening on ${PORT}`);
-});
 module.exports = router;
