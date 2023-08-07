@@ -8,7 +8,7 @@ const coachSchema = mongoose.Schema({
   name: String,
   firstname: String,
   image: String,
-  dateOfBirth : Date,
+  dateOfBirth : String,
   myDescription : String,
   teachedSport : Array,
   proCard : String,
