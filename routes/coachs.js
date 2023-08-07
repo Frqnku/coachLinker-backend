@@ -9,8 +9,10 @@ const bcrypt = require('bcrypt')
 
 
 router.get('/', (req, res) => {
+  console.log('hey')
   Coach.find()
   .then(data => {
+    console.log(data)
     return data ? res.json({ result: true, data }) : res.json({ result: false, error: 'Aucun coach trouvé' })
   })
 })

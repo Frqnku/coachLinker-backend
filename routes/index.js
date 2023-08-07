@@ -11,6 +11,7 @@ const { checkBody } = require('../modules/checkBody');
 const bcrypt = require('bcrypt')
 
 router.post('/connect', (req, res) => {
+  console.log(req.body, 'connect')
   if (!checkBody(req.body, ['email', 'password'])) {
     return res.json({ result: false, error: 'Remplissez tous les champs de saisie' });
   }
