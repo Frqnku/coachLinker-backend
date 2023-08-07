@@ -22,6 +22,14 @@ router.post('/profil', (req, res) => {
   })
 })
 
+// router.post('/', (req, res) => {
+//   Coach.findOne({token: req.body.token})
+//   .then(data => {
+//     if(!data) {
+//       return res.json({result: false, error: 'Aucun utilisateur trouvé'})
+// } })})
+
+
 router.post('/new', (req, res) => {
   if (!checkBody(req.body, ['email', 'password', 'name', 'firstname', 'image', 'myDescription', 'teachedSport', 'proCard', 'siret', 'iban', 'bic', 'price', 'city'])) {
     return res.json({ result: false, error: 'Remplissez tous les champs de saisie' });
