@@ -24,7 +24,7 @@ router.post('/connect', (req, res) => {
     Student.findOne({email: req.body.email})
     .then(data => {
       if(data && bcrypt.compareSync(req.body.password, data.password)) {
-        return res.json({result: true, message: 'Connecté avec succès', token: data.token})
+        return res.json({result: true, message: 'Connecté avec succès', token: data.token, isCoach: data.isCoach})
       }
 
       return res.json({result: false, message: 'Aucun utilisateur trouvé'})
