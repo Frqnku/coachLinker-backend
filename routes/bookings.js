@@ -88,7 +88,7 @@ router.post('/coach', (req, res) => {
             return res.json({result: false, error: 'Aucun utilisateur trouvé'})
         }
 
-        Booking.find({studentID: data._id})
+        Booking.find({coachID: data._id})
         .populate('studentID', 'firstname image dateOfBirth')
         .then(bookings => {
             return res.json({result: true, bookings})
