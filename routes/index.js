@@ -18,13 +18,13 @@ router.post('/connect', (req, res) => {
   Coach.findOne({email: req.body.email})
   .then(data => {
     if(data && bcrypt.compareSync(req.body.password, data.password)) {
-      return res.json({result: true, message: 'Connecté avec succès', token: data.token})
+      return res.json({result: true, message: 'Connecté avec succès', token: data.token, name: data.name , firstname: data.firstname})
     }
 
     Student.findOne({email: req.body.email})
     .then(data => {
       if(data && bcrypt.compareSync(req.body.password, data.password)) {
-        return res.json({result: true, message: 'Connecté avec succès', token: data.token})
+        return res.json({result: true, message: 'Connecté avec succès', token: data.token, name: data.name , firstname: data.firstname})
       }
 
       return res.json({result: false, message: 'Aucun utilisateur trouvé'})
@@ -78,5 +78,30 @@ router.post('/upload', async (req, res) => {
   }
 });
 
+
+router.post('/audio', async (req, res) => {
+  console.log('fetched')
+  console.log('backend received fetch', req.files.recordFromFront)
+
+const recordPath = `./tmp/${uniqid()}.mp3`;
+try {
+  await req.files.recordFromFront.mv(recordPath);
+
+  const resultCloudinary = await cloudinary.uploader.upload(recordPath, {
+      resource_type: "auto",
+  });
+  console.log('Cloudinary response:', resultCloudinary);
+
+  if (resultCloudinary) {
+    fs.unlinkSync(recordPath);
+    return res.json({ result: true, url: resultCloudinary.secure_url });
+  } else {
+    return res.json({ result: false, error: 'Failed' });
+  }
+} catch (error) {
+  console.error('Error uploading file:', error);
+  return res.json({ result: false, error: 'Failed to upload the file' });
+}
+});
 
 module.exports = router;
