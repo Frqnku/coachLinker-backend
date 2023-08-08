@@ -96,13 +96,12 @@ router.post('/update', (req, res) => {
 })
 
 router.post('/validate', (req, res) => {
-  Coach.findOne({token : req.body.token})
+  Coach.updateOne({token : req.body.token}, {isValidate : true})
   .then(data => {
-    if (!data) {
+    if (data.matchedCount === 0) {
       return res.json({ result: false, error: 'Utilisateur inexistant' });
     }
-
-    isValidate = true
+    
     return res.json({ result: true, message: 'Profil coach validé' });
 
   })
