@@ -11,6 +11,7 @@ const { checkBody } = require('../modules/checkBody');
 const bcrypt = require('bcrypt')
 
 router.post('/connect', (req, res) => {
+  console.log(req.body, 'connect')
   if (!checkBody(req.body, ['email', 'password'])) {
     return res.json({ result: false, error: 'Remplissez tous les champs de saisie' });
   }
@@ -18,13 +19,14 @@ router.post('/connect', (req, res) => {
   Coach.findOne({email: req.body.email})
   .then(data => {
     if(data && bcrypt.compareSync(req.body.password, data.password)) {
-      return res.json({result: true, message: 'Connecté avec succès', token: data.token, name: data.name , firstname: data.firstname})
+      return res.json({result: true, message: 'Connecté avec succès', token: data.token,isCoach: data.isCoach, isValidate: data.isValidate, name: data.name , firstname: data.firstname})
+
     }
 
     Student.findOne({email: req.body.email})
     .then(data => {
       if(data && bcrypt.compareSync(req.body.password, data.password)) {
-        return res.json({result: true, message: 'Connecté avec succès', token: data.token, name: data.name , firstname: data.firstname})
+        return res.json({result: true, message: 'Connecté avec succès', token: data.token,isCoach: data.isCoach, name: data.name , firstname: data.firstname})
       }
 
       return res.json({result: false, message: 'Aucun utilisateur trouvé'})

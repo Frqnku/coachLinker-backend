@@ -6,13 +6,43 @@ const Coach = require('../models/coachs');
 const { checkBody } = require('../modules/checkBody');
 const uid2 = require('uid2');
 const bcrypt = require('bcrypt')
+const nodemailer = require('nodemailer');
+const handlebars = require('handlebars');
+const fs = require('fs');
+
+const transporter = nodemailer.createTransport({
+  service: 'Gmail',
+  auth: {
+    user: 'coachlinker@gmail.com',
+    pass: process.env.PWD_GMAIL, // Make sure to set this environment variable
+  },
+});
+
+function compileTemplateWithContent(content) {
+  const templateHtml = fs.readFileSync('./models/templateCoachValidate.html', 'utf-8');
+  const compiledTemplate = handlebars.compile(templateHtml);
+  const html = compiledTemplate(content);
+  return html;
+}
+
 
 router.get('/', (req, res) => {
+  console.log('hey')
   Coach.find()
+  .then(data => {
+    console.log(data)
+    return data ? res.json({ result: true, data }) : res.json({ result: false, error: 'Aucun coach trouvé' })
+  })
+})
+
+router.post('/profil', (req, res) => {
+  Coach.findOne({token: req.body.token})
   .then(data => {
     return data ? res.json({ result: true, data }) : res.json({ result: false, error: 'Aucun coach trouvé' })
   })
 })
+
+
 
 router.post('/new', (req, res) => {
   if (!checkBody(req.body, ['email', 'password', 'name', 'firstname', 'image', 'myDescription', 'teachedSport', 'proCard', 'siret', 'iban', 'bic', 'price', 'city'])) {
@@ -84,17 +114,46 @@ router.post('/update', (req, res) => {
 })
 
 router.post('/validate', (req, res) => {
-  Coach.findOne({token : req.body.token})
+  Coach.updateOne({token : req.body.token}, {isValidate : true})
   .then(data => {
-    if (!data) {
+    if (data.matchedCount === 0) {
       return res.json({ result: false, error: 'Utilisateur inexistant' });
     }
+    
+    Coach.findOne({ token: req.body.token })
+    .then(coach => {
+      if(!coach) {
+        return res.json({ result: false, error: 'Utilisateur inexistant' })
+      }
+      const emailContent = {
+        coachName: coach.firstname,
+      }
 
-    isValidate = true
-    return res.json({ result: true, message: 'Profil coach validé' });
+      const emailOptions = {
+        from: 'coachlinker@gmail.com',
+        to: coach.email,
+        subject: 'Profil validé',
+        html: compileTemplateWithContent(emailContent),
+      }
 
+      transporter.sendMail(emailOptions, (error, info) => {
+        if (error) {
+          console.log("Erreur lors de l'envoi de l'email au coach :", error)
+        } else {
+          console.log("Email envoyé au coach:", info.response)
+        }
+      })
+      return res.json({ result: true, message: 'Profil coach validé' });
+    })
+    .catch(error => {
+      console.log("Erreur lors de la récupération de l'email du coach :", error)
+      return res.json({ result: true, message: 'Profil coach validé' })
+    })
+  })
+  .catch(error => {
+    console.log("Erreur lors de la validation du profil coach :", error)
+    return res.json({ result: false, error: "Erreur lors de la validation du profil" })
   })
 })
 
-module.exports = router;
-
+module.exports = router

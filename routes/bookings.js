@@ -63,10 +63,10 @@ function sendConfirmationStudentEmail(studentEmail, bookingConfirm) {
     })
 }
 
-router.get('/student', (req, res) => {
+router.post('/student', (req, res) => { console.log('testbug', req.body)
     Student.findOne({token: req.body.token})
-    .then(data => {
-        if(!data) {
+    .then(data => { 
+        if(!data) { 
             return res.json({result: false, error: 'Aucun utilisateur trouvé'})
         }
 
@@ -81,14 +81,14 @@ router.get('/student', (req, res) => {
     })
 })
 
-router.get('/coach', (req, res) => {
+router.post('/coach', (req, res) => {
     Coach.findOne({token: req.body.token})
     .then(data => {
         if(!data) {
             return res.json({result: false, error: 'Aucun utilisateur trouvé'})
         }
 
-        Booking.find({studentID: data._id})
+        Booking.find({coachID: data._id})
         .populate('studentID', 'firstname image dateOfBirth')
         .then(bookings => {
             return res.json({result: true, bookings})
