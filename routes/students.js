@@ -15,6 +15,13 @@ router.get('/', (req, res) => {
   })
 })
 
+router.post('/profil', (req, res) => {
+  Student.findOne({token: req.body.token})
+  .then(data => {
+    return data ? res.json({ result: true, data }) : res.json({ result: false, error: 'Aucun student trouvé' })
+  })
+})
+
 router.post('/new', (req, res) => {
   console.log(req.body)
   if (!checkBody(req.body, ['email', 'password', 'name', 'firstname', 'image', 'dateOfBirth', 'myDescription', 'favoriteSport'])) {
