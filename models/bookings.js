@@ -11,7 +11,6 @@ const bookingsSchema = mongoose.Schema({
     },
     date: String,
     startTime: String,
-    endTime: String,
     coachingPlace: String,
     selectedSport: String
 });

@@ -96,8 +96,15 @@ router.post('/coach', (req, res) => {
     })
 })
 
+router.post('/isAvaible', (req, res) => {
+    Booking.find({coachID: req.body.coachID})
+        .then(bookings => {
+            return res.json({result: true, bookings})
+        })
+})
+
 router.post('/new', (req, res) => {
-    if (!checkBody(req.body, ['date', 'startTime', 'endTime', 'coachingPlace'])) {
+    if (!checkBody(req.body, ['date', 'startTime', 'coachingPlace'])) {
         return res.json({ result: false, error: 'Remplissez tous les champs de saisie' });
     }    
 
@@ -113,7 +120,6 @@ router.post('/new', (req, res) => {
                     coachID: req.body.coachID,
                     date: req.body.date,
                     startTime: req.body.startTime,
-                    endTime: req.body.endTime,
                     coachingPlace: req.body.coachingPlace,
                     selectedSport: req.body.selectedSport
                 })    
@@ -129,7 +135,6 @@ router.post('/new', (req, res) => {
                             coachName: coach.firstname,
                             date : req.body.date, /* a voir avec le groupe */
                             startTime: req.body.startTime,
-                            endTime: req.body.endTime,
                             coachingPlace: req.body.coachingPlace,
                             selectedSport: req.body.selectedSport
                         }
@@ -145,7 +150,6 @@ router.post('/new', (req, res) => {
                                 studentName: student.firstname,
                                 date : req.body.date, /* a voir avec le groupe */
                                 startTime: req.body.startTime,
-                                endTime: req.body.endTime,
                                 coachName: req.body.coachName,
                                 coachingPlace: req.body.coachingPlace,
                                 selectedSport: req.body.selectedSport
