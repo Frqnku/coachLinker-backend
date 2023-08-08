@@ -64,19 +64,68 @@ router.post('/new', (req, res) => {
 })
 
 router.post('/update', (req, res) => {
-  Student.findOne({token : req.body.token})
-  .then(data => {
-    if (!data) {
-      return res.json({ result: false, error: 'Utilisateur inexistant' });
-    }
+  const { token, image, myDescription, favoriteSport } = req.body;
 
-    req.body.image && (data.image = req.body.image)
-    req.body.myDescription && (data.myDescription = req.body.myDescritpion)
-    req.body.favoriteSport && (data.favoriteSport = [req.body.favoriteSport])
-    return res.json({ result: true, message: 'Informations mises à jour' });
+  // Vérifier si le token est présent dans la requête
+  if (!token) {
+    return res.json({ result: false, error: 'Token manquant' });
+  }
 
-  })
-})
+  // Construire les données à mettre à jour en fonction de ce qui est fourni dans la requête
+  const updatedData = {};
+  if (image) updatedData.image = image;
+  if (myDescription) updatedData.myDescription = myDescription;
+  if (favoriteSport) updatedData.favoriteSport = [favoriteSport];
+
+  // Mettre à jour les données de le student dans la base de données
+  Student.findOneAndUpdate(
+    { token: token },
+    { $set: updatedData },
+    { new: true } // Pour renvoyer le document mis à jour
+  )
+    .then(updatedStudent => {
+      if (!updatedStudent) {
+        return res.json({ result: false, error: 'Utilisateur inexistant' });
+      }
+      return res.json({ result: true, message: 'Informations mises à jour' });
+    })
+    .catch(error => {
+      console.error('Erreur lors de la mise à jour des informations:', error);
+      return res.json({ result: false, error: 'Erreur de mise à jour' });
+    });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  //   Student.findOne({token : req.body.token})
+//   .then(data => {
+//     if (!data) {
+//       return res.json({ result: false, error: 'Utilisateur inexistant' });
+//     }
+
+//     req.body.image && (data.image = req.body.image)
+//     req.body.myDescription && (data.myDescription = req.body.myDescritpion)
+//     req.body.favoriteSport && (data.favoriteSport = [req.body.favoriteSport])
+//     return res.json({ result: true, message: 'Informations mises à jour' });
+
+//   })
+// })
 
 module.exports = router;
 
