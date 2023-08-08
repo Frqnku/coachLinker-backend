@@ -63,10 +63,10 @@ function sendConfirmationStudentEmail(studentEmail, bookingConfirm) {
     })
 }
 
-router.post('/student', (req, res) => {
+router.post('/student', (req, res) => { console.log('testbug', req.body)
     Student.findOne({token: req.body.token})
-    .then(data => {
-        if(!data) {
+    .then(data => { 
+        if(!data) { 
             return res.json({result: false, error: 'Aucun utilisateur trouvé'})
         }
 
