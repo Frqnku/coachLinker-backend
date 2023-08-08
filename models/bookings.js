@@ -12,7 +12,7 @@ const bookingsSchema = mongoose.Schema({
     date: String,
     startTime: String,
     coachingPlace: String,
-    selectedSport: String
+    selectedSport: Array
 });
 
 const Bookings = mongoose.model('bookings', bookingsSchema);
