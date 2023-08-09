@@ -4,7 +4,7 @@ const uniqid = require('uniqid');
 
 const cloudinary = require('cloudinary').v2;
 const fs = require('fs');
-
+const Book = require('../models/bookings')
 const Student = require('../models/students');
 const Coach = require('../models/coachs');
 const { checkBody } = require('../modules/checkBody');
@@ -19,17 +19,22 @@ router.post('/connect', (req, res) => {
   Coach.findOne({email: req.body.email})
   .then(data => {
     if(data && bcrypt.compareSync(req.body.password, data.password)) {
-      return res.json({result: true, message: 'Connecté avec succès', token: data.token,isCoach: data.isCoach, isValidate: data.isValidate, name: data.name , firstname: data.firstname})
+Book.find({coachID : data._id}).populate('studentID').then((books) => {
+  return res.json({result: true, message: 'Connecté avec succès', token: data.token,isCoach: data.isCoach, isValidate: data.isValidate, name: data.name , firstname: data.firstname, books })
+})
+     
 
     }
 
     Student.findOne({email: req.body.email})
     .then(data => {
       if(data && bcrypt.compareSync(req.body.password, data.password)) {
-        return res.json({result: true, message: 'Connecté avec succès', token: data.token,isCoach: data.isCoach, name: data.name , firstname: data.firstname})
+        Book.find({studentID : data._id}).populate('coachID').then((books) => {
+        return res.json({result: true, message: 'Connecté avec succès', token: data.token,isCoach: data.isCoach, name: data.name , firstname: data.firstname, books})
+        })
       }
 
-      return res.json({result: false, message: 'Aucun utilisateur trouvé'})
+    
     })
   })
 })
