@@ -64,6 +64,7 @@ router.post('/new', (req, res) => {
 })
 
 router.post('/update', (req, res) => {
+  console.log(req.body)
   const { token, image, myDescription, favoriteSport } = req.body;
 
   // Vérifier si le token est présent dans la requête

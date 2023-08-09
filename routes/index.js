@@ -20,7 +20,7 @@ router.post('/connect', (req, res) => {
   .then(data => {
     if(data && bcrypt.compareSync(req.body.password, data.password)) {
 Book.find({coachID : data._id}).populate('studentID').then((books) => {
-  return res.json({result: true, message: 'Connecté avec succès', token: data.token,isCoach: data.isCoach, isValidate: data.isValidate, name: data.name , firstname: data.firstname, books })
+  return res.json({result: true, message: 'Connecté avec succès', token: data.token,isCoach: data.isCoach, isValidate: data.isValidate, name: data.name , firstname: data.firstname, books , data: data})
 })
      
 
@@ -30,7 +30,7 @@ Book.find({coachID : data._id}).populate('studentID').then((books) => {
     .then(data => {
       if(data && bcrypt.compareSync(req.body.password, data.password)) {
         Book.find({studentID : data._id}).populate('coachID').then((books) => {
-        return res.json({result: true, message: 'Connecté avec succès', token: data.token,isCoach: data.isCoach, name: data.name , firstname: data.firstname, books})
+        return res.json({result: true, message: 'Connecté avec succès', token: data.token,isCoach: data.isCoach, name: data.name , firstname: data.firstname, books, data: data})
         })
       }
 
