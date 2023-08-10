@@ -28,18 +28,6 @@ router.post('/new', (req, res) => {
     return res.json({ result: false, error: 'Remplissez tous les champs de saisie' });
   }
 
-  Student.findOne({email: req.body.email})
-  .then(data => {
-    if(data) {
-      return res.json({result: false, error: 'Student déjà existant'})
-    }
-
-    Coach.findOne({email: req.body.email})
-    .then(data => {
-      if(data) {
-        return res.json({result: false, error: 'Coach déjà existant'})
-      }
-
       const hash = bcrypt.hashSync(req.body.password, 10);
 
       const newStudent = new Student({
@@ -59,8 +47,6 @@ router.post('/new', (req, res) => {
       .then(student => {
         return res.json({result: true, newStudent: student})
       })
-    })
-  })
 })
 
 router.post('/update', (req, res) => {
