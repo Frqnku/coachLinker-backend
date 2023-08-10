@@ -20,6 +20,14 @@ router.post('/new', (req, res) => {
         return res.json({ result: false, error: 'Remplissez tous les champs de saisie' });
     }
 
+    
+    Coach.findOne({ token: req.body.token })
+    .then(data => {
+        if (!data) {
+            return res.json({ result: false, error: 'Aucun coach trouvé' });
+        }
+        console.log(req.body)
+
         const planning = req.body.planning;
         const daysOfWeek = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
         
@@ -27,8 +35,10 @@ router.post('/new', (req, res) => {
         Planning.findOne({ coachID: data._id})
         .then(existingPlanning => {
             if (existingPlanning) {
+                console.log('exist', existingPlanning, 'exist')
                 // si le planning existe déjà, met à jour le planning existant
                 existingPlanning.days.forEach((day, i) => {
+                    console.log(planning[i])
                     if (planning[i]) {
                         existingPlanning.days[i].startDay = planning[i].start || ""
                         existingPlanning.days[i].endDay = planning[i].end || ""
@@ -42,6 +52,7 @@ router.post('/new', (req, res) => {
                 })
 
             } else {
+                console.log(data)
                     const newPlanning = new Planning({
                     coachID: data._id,
                     days: daysOfWeek.map((day, i) => ({
@@ -58,6 +69,7 @@ router.post('/new', (req, res) => {
                 })
             }
         })
+    })
 });
 
 module.exports = router;
